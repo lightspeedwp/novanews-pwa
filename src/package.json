@@ -1,0 +1,50 @@
+{
+  "name": "novanews-pwa",
+  "version": "0.1.0",
+  "description": "NovaNews Progressive Web App - A modern news platform for South African community journalism",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^1.14.0",
+    "sonner": "2.0.3",
+    "react-hook-form": "7.55.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "typescript": "^5.0.2",
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^0.17.0",
+    "workbox-window": "^7.0.0",
+    "@tailwindcss/vite": "4.0.0-alpha.31"
+  },
+  "keywords": [
+    "news",
+    "pwa",
+    "progressive-web-app",
+    "south-africa",
+    "journalism",
+    "react",
+    "vite",
+    "typescript"
+  ],
+  "author": "NovaNews Team",
+  "license": "MIT"
+}

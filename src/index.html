@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Primary Meta Tags -->
+  <title>NovaNews - South African Community News</title>
+  <meta name="title" content="NovaNews - South African Community News" />
+  <meta name="description" content="Stay informed with breaking news, sports, business, lifestyle, and community stories from across South Africa. Read offline with our progressive web app." />
+  <meta name="keywords" content="South Africa news, community journalism, breaking news, sport, business, lifestyle, opinion, recipes" />
+  <meta name="author" content="NovaNews Team" />
+  
+  <!-- Theme and PWA Meta Tags -->
+  <meta name="theme-color" content="#003366" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="NovaNews" />
+  <meta name="application-name" content="NovaNews" />
+  <meta name="msapplication-TileColor" content="#003366" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://novanews.netlify.app/" />
+  <meta property="og:title" content="NovaNews - South African Community News" />
+  <meta property="og:description" content="Stay informed with breaking news, sports, business, lifestyle, and community stories from across South Africa." />
+  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_ZA" />
+  <meta property="og:site_name" content="NovaNews" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://novanews.netlify.app/" />
+  <meta property="twitter:title" content="NovaNews - South African Community News" />
+  <meta property="twitter:description" content="Stay informed with breaking news, sports, business, lifestyle, and community stories from across South Africa." />
+  <meta property="twitter:image" content="/og-image.jpg" />
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#003366" />
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://novanews.netlify.app/" />
+  
+  <!-- DNS Prefetch for external domains -->
+  <link rel="dns-prefetch" href="//images.unsplash.com" />
+  
+  <!-- Structured Data for News Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "NovaNews",
+    "url": "https://novanews.netlify.app",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://novanews.netlify.app/logo.png",
+      "width": 200,
+      "height": 60
+    },
+    "description": "South African community news platform covering breaking news, sports, business, lifestyle, and local stories",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ZA"
+    },
+    "sameAs": [
+      "https://twitter.com/novanews",
+      "https://facebook.com/novanews"
+    ],
+    "publishingPrinciples": "https://novanews.netlify.app/editorial-guidelines"
+  }
+  </script>
+  
+  <!-- Critical CSS inline for better performance -->
+  <style>
+    /* Critical loading styles */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f5;
+      border-top: 3px solid #003366;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Hide loading screen once app loads */
+    body.loaded .loading-screen {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading screen shown while React app initializes -->
+  <div class="loading-screen" aria-label="Loading NovaNews application">
+    <div class="loading-spinner" role="status" aria-hidden="true"></div>
+    <span class="sr-only">Loading...</span>
+  </div>
+  
+  <!-- React app mount point -->
+  <div id="root"></div>
+  
+  <!-- Main application script -->
+  <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- Remove loading screen once app loads -->
+  <script>
+    window.addEventListener('load', function() {
+      document.body.classList.add('loaded');
+    });
+  </script>
+  
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('SW registered: ', registration);
+          })
+          .catch(function(registrationError) {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

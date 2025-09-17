@@ -1,0 +1,103 @@
+# Netlify configuration for NovaNews PWA
+# This file configures build settings, redirects, and headers for optimal PWA deployment
+
+[build]
+  # Build command - builds the application for production
+  command = "npm run build"
+  
+  # Output directory where built files are located
+  publish = "dist"
+  
+  # Node.js version for consistent builds
+  environment = { NODE_VERSION = "18" }
+
+[functions]
+  # Directory containing serverless functions
+  directory = "netlify/functions"
+  
+  # Use esbuild for fast function bundling
+  node_bundler = "esbuild"
+
+# Single Page Application redirect
+# All routes should serve index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security and performance headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # PWA and caching headers
+    Content-Security-Policy = "default-src 'self'; img-src 'self' https://images.unsplash.com data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://images.unsplash.com; font-src 'self' data:; manifest-src 'self';"
+
+# Cache static assets for better performance
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache service worker for shorter periods
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Cache manifest.json
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Optimize images
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  
+  [plugins.inputs.thresholds]
+    performance = 0.8
+    accessibility = 0.9
+    best-practices = 0.8
+    seo = 0.8
+    pwa = 0.8
+
+[[plugins]]
+  package = "netlify-plugin-checklinks"
+  
+  [plugins.inputs]
+    entryPoints = [
+      "*.html",
+    ]
+    recursive = true
+    pretty = true
+    skipPatterns = [
+      "mailto:",
+      "tel:",
+    ]

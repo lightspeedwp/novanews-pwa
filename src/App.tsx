@@ -48,9 +48,22 @@ interface Article {
 /**
  * Mock articles data for prototype and development.
  * In production, this would be replaced with API calls to fetch real article data.
- * Each article follows the Article interface specification.
+ * Each article follows the Article interface specification and includes realistic
+ * South African news content across multiple categories.
  *
  * @type {Article[]}
+ * 
+ * @example
+ * ```tsx
+ * // In production, replace with:
+ * const [articles, setArticles] = useState<Article[]>([]);
+ * 
+ * useEffect(() => {
+ *   fetchArticlesFromAPI()
+ *     .then(setArticles)
+ *     .catch(handleError);
+ * }, []);
+ * ```
  */
 const mockArticles: Article[] = [
   {
@@ -245,8 +258,11 @@ export default function App() {
   const [isOffline, setIsOffline] = useState(false);
 
   /**
-   * Simulates PWA install prompt behavior.
-   * Shows install prompt after 5 seconds if install button is available.
+   * Simulates PWA install prompt behavior following UX best practices.
+   * Shows install prompt after 5 seconds to avoid disrupting initial experience.
+   * Only shows if install functionality is available and user hasn't dismissed it.
+   * 
+   * @see Guidelines.md Section 16 for PWA installation requirements
    */
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -259,8 +275,13 @@ export default function App() {
   }, [showInstallButton]);
 
   /**
-   * Handles online/offline status detection.
-   * Updates application state based on network connectivity.
+   * Handles online/offline status detection for PWA functionality.
+   * Updates application state based on network connectivity and provides
+   * seamless offline experience as specified in Guidelines.md Section 8.
+   * 
+   * @accessibility
+   * - Status changes are announced to screen readers via OfflinePage component
+   * - Provides clear visual feedback about connection state
    */
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -276,8 +297,27 @@ export default function App() {
   }, []);
 
   /**
-   * Handles PWA installation process.
-   * Shows success notification and updates UI state.
+   * Handles PWA installation process following Guidelines.md PWA requirements.
+   * Shows success notification and updates UI state to reflect installation.
+   * In production, this would integrate with the actual beforeinstallprompt event.
+   * 
+   * @accessibility
+   * - Uses toast notification for immediate feedback
+   * - Removes install prompts to prevent duplicate requests
+   * 
+   * @example
+   * ```tsx
+   * // Production implementation:
+   * const handleInstall = async () => {
+   *   if (deferredPrompt) {
+   *     const result = await deferredPrompt.prompt();
+   *     if (result.outcome === 'accepted') {
+   *       toast.success("App installed successfully!");
+   *       setShowInstallButton(false);
+   *     }
+   *   }
+   * };
+   * ```
    */
   const handleInstall = () => {
     toast.success("App installed successfully!", {
@@ -289,10 +329,33 @@ export default function App() {
   };
 
   /**
-   * Toggles bookmark status for an article.
-   * Updates article state and shows user feedback via toast notification.
+   * Toggles bookmark status for an article following NovaNews engagement patterns.
+   * Updates article state locally and provides immediate user feedback.
+   * In production, this would sync with backend storage and user accounts.
    *
    * @param {string} articleId - The ID of the article to bookmark/unbookmark
+   * 
+   * @accessibility
+   * - Uses toast notifications for immediate feedback to all users
+   * - Clear language explains the action and consequence
+   * - Works consistently across all device types
+   * 
+   * @example
+   * ```tsx
+   * // Production implementation with API:
+   * const handleBookmark = async (articleId: string) => {
+   *   try {
+   *     await updateBookmarkStatus(articleId, !article.isBookmarked);
+   *     setArticles(prev => prev.map(article => 
+   *       article.id === articleId 
+   *         ? { ...article, isBookmarked: !article.isBookmarked }
+   *         : article
+   *     ));
+   *   } catch (error) {
+   *     toast.error("Unable to update bookmark");
+   *   }
+   * };
+   * ```
    */
   const handleBookmark = (articleId: string) => {
     setArticles((prev) =>
@@ -373,6 +436,10 @@ export default function App() {
     }
   };
 
+  /**
+   * Computed values for article display based on current category filter.
+   * Follows NovaNews content hierarchy: featured article + regular articles.
+   */
   const filteredArticles =
     activeCategory === "home"
       ? articles
@@ -380,8 +447,13 @@ export default function App() {
           (article) => article.category === activeCategory,
         );
 
+  /** First article in filtered list, displayed prominently as featured content */
   const featuredArticle = filteredArticles[0];
+  
+  /** Remaining articles displayed in standard grid layout */
   const regularArticles = filteredArticles.slice(1);
+  
+  /** User's bookmarked articles for offline reading functionality */
   const savedArticles = articles.filter(
     (article) => article.isBookmarked,
   );
@@ -468,16 +540,16 @@ export default function App() {
       />
 
       <main id="main-content" className="md:ml-0 px-4 py-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="container-site">
           {/* Category Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold mb-2 capitalize">
+            <h1 className="text-section-title text-headline-blue mb-2 capitalize">
               {activeCategory === "home"
                 ? "Latest News"
                 : activeCategory}
             </h1>
             {activeCategory !== "home" && (
-              <p className="text-muted-foreground">
+              <p className="text-body-large text-mid-grey">
                 Latest updates from {activeCategory}
               </p>
             )}
@@ -485,19 +557,19 @@ export default function App() {
 
           {/* Breaking News Banner */}
           {activeCategory === "home" && (
-            <Card className="mb-6 bg-destructive/10 border-destructive/20">
-              <CardContent className="p-4">
+            <Card className="mb-6 bg-news-red/10 border-news-red/20">
+              <CardContent className="padding-card">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="destructive">Breaking</Badge>
-                  <span className="text-sm text-muted-foreground">
+                  <Badge className="bg-news-red text-white">Breaking</Badge>
+                  <span className="text-body-small text-mid-grey">
                     Live Updates
                   </span>
                 </div>
-                <h3 className="font-semibold">
+                <h3 className="text-card-title text-headline-blue">
                   Major Economic Policy Changes Announced for
                   2025
                 </h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-body-small text-mid-grey mt-1">
                   Government unveils comprehensive reforms to
                   reshape business landscape
                 </p>
@@ -508,7 +580,7 @@ export default function App() {
           {/* Featured Article */}
           {featuredArticle && (
             <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="text-section-title text-headline-blue mb-4">
                 Featured Story
               </h2>
               <ArticleCard
@@ -525,7 +597,7 @@ export default function App() {
           {regularArticles.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-section-title text-headline-blue">
                   {activeCategory === "home"
                     ? "More Stories"
                     : `${activeCategory} News`}
@@ -536,12 +608,13 @@ export default function App() {
                   onClick={() => setIsOffline(true)}
                   aria-label="Preview offline reading experience"
                   title="See how the app works when you're offline"
+                  className="border-headline-blue text-headline-blue hover:bg-headline-blue hover:text-white"
                 >
                   Preview Offline Mode
                 </Button>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-grid-small">
                 {regularArticles.map((article) => (
                   <ArticleCard
                     key={article.id}
@@ -558,16 +631,17 @@ export default function App() {
           {/* Empty State */}
           {filteredArticles.length === 0 && (
             <Card>
-              <CardContent className="text-center p-12">
-                <h3 className="font-semibold mb-2">
+              <CardContent className="text-center padding-card">
+                <h3 className="text-card-title text-headline-blue mb-2">
                   No articles found
                 </h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-body-large text-mid-grey mb-4">
                   There are no articles in this category yet.
                 </p>
                 <Button
                   variant="outline"
                   onClick={() => setActiveCategory("home")}
+                  className="border-headline-blue text-headline-blue hover:bg-headline-blue hover:text-white"
                 >
                   View All Articles
                 </Button>
